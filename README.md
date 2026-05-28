@@ -25,6 +25,7 @@ dotnet restore
 
 
 Paso 3 — Crear la base de datos (esto aplica la migración y carga los datos automáticamente):
+quisa de deba instalar antes: dotnet tool install --global dotnet-ef
 
 dotnet ef database update
 
