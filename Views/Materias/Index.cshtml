@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TUP.MateriasMVC.Models.Materia>
+@{
+    ViewData["Title"] = "Listado de Materias";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h3 mb-0 fw-bold">Materias del TUP</h1>
+        <p class="text-muted mb-0">Tecnicatura Universitaria en Programación</p>
+    </div>
+    <span class="badge bg-primary fs-6">@Model.Count() materias</span>
+</div>
+
+@foreach (var grupo in Model.GroupBy(m => m.Anio).OrderBy(g => g.Key))
+{
+    <h5 class="text-secondary mt-4 mb-3 border-bottom pb-2">
+        @grupo.Key º Año
+    </h5>
+
+    <div class="row g-3 mb-2">
+        @foreach (var materia in grupo.OrderBy(m => m.Cuatrimestre))
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100" style="box-shadow: 0 2px 8px rgba(0,0,0,.08);">
+                    <div class="card-body">
+
+                        <h5 class="card-title fw-bold text-primary">@materia.Nombre</h5>
+
+                        <span class="badge bg-secondary mb-2">
+                            @materia.Cuatrimestre º Cuatrimestre
+                        </span>
+
+                        <p class="card-text text-muted small">@materia.Descripcion</p>
+
+                        <p class="card-text mb-1">
+                            <strong>Profesor:</strong>
+                            @(materia.Profesor?.NombreCompleto ?? "Sin asignar")
+                        </p>
+
+                        <p class="card-text mb-3">
+                            <strong>Alumnos:</strong>
+                            @materia.MateriaAlumnos.Count inscriptos
+                        </p>
+
+                        <a asp-action="Detalle" asp-route-id="@materia.Id"
+                           class="btn btn-outline-primary btn-sm w-100">
+                            Ver detalle
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

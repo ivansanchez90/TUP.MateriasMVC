@@ -1,0 +1,98 @@
+﻿@model TUP.MateriasMVC.Models.Materia
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Index">Materias</a>
+        </li>
+        <li class="breadcrumb-item active">@Model.Nombre</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">@Model.Nombre</h4>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">@Model.Descripcion</p>
+        <p><strong>Año:</strong> @Model.Anio | <strong>Cuatrimestre:</strong> @Model.Cuatrimestre</p>
+
+        <hr />
+
+        <h6 class="fw-bold">Profesor a cargo</h6>
+        @if (Model.Profesor is null)
+        {
+            <p class="text-muted fst-italic">Sin profesor asignado.</p>
+        }
+        else
+        {
+            <ul class="list-unstyled ms-3">
+                <li><strong>Nombre:</strong> @Model.Profesor.NombreCompleto</li>
+                <li><strong>Email:</strong> @Model.Profesor.Email</li>
+                <li><strong>Legajo:</strong> @Model.Profesor.Legajo</li>
+            </ul>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Alumnos inscriptos
+            <span class="badge bg-info ms-2">@Model.MateriaAlumnos.Count</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.MateriaAlumnos.Any())
+        {
+            <p class="p-4 text-muted fst-italic">Sin alumnos inscriptos.</p>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Apellido y Nombre</th>
+                        <th>DNI</th>
+                        <th>Email</th>
+                        <th>Condición</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var inscripcion in Model.MateriaAlumnos.OrderBy(ma => ma.Alumno.Apellido))
+                    {
+                        <tr>
+                            <td class="text-muted">@(i++)</td>
+                            <td class="fw-semibold">@inscripcion.Alumno.NombreCompleto</td>
+                            <td>@inscripcion.Alumno.Dni</td>
+                            <td>@inscripcion.Alumno.Email</td>
+                            <td>
+                                @{
+                                    var badge = inscripcion.Condicion switch
+                                    {
+                                        "Regular" => "bg-success",
+                                        "Libre" => "bg-danger",
+                                        "Promocionado" => "bg-primary",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @badge">@inscripcion.Condicion</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary">← Volver al listado</a>
+</div>
